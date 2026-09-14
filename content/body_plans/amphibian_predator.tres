@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BodyPlanDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/body_plan_def.gd" id="1_body"]
+
+[resource]
+script = ExtResource("1_body")
+id = &"amphibian_predator"
+display_key = &"BODY_PLAN_AMPHIBIAN_PREDATOR"
+base_parts = Array[StringName]([&"head", &"torso", &"mouth", &"tongue", &"forelimb_left", &"forelimb_right", &"hindlimb_left", &"hindlimb_right"])
+movement_capabilities = Array[StringName]([&"ground_move"])
+size_class = 2

@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="SpeciesDef" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/data/species_def.gd" id="1_species"]
+[ext_resource type="Script" path="res://src/genetics/genome.gd" id="2_genome"]
+[ext_resource type="Resource" path="res://content/body_plans/amphibian_predator.tres" id="3_body"]
+
+[sub_resource type="Resource" id="Genome_base"]
+script = ExtResource("2_genome")
+body_plan_id = &"amphibian_predator"
+trait_values = Dictionary[StringName, float]({
+&"body_size": 1.40,
+&"move_speed": 1.10,
+&"metabolism": 0.90,
+&"sensory_range": 1.25,
+&"forelimb_dexterity": 0.10,
+&"membrane_potential": 0.00,
+&"regeneration": 0.15
+})
+
+[resource]
+script = ExtResource("1_species")
+id = &"frog_predator"
+display_key = &"species.frog_predator"
+body_plan = ExtResource("3_body")
+base_genome = SubResource("Genome_base")
+cognition_band = &"instinctive"
+diet_tags = Array[StringName]([&"carnivore"])
+reproduction_tags = Array[StringName]([])
