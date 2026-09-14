@@ -1,7 +1,7 @@
 # Monster Lineage Sandbox — Game Design Specification
 
 Date: 2026-09-14
-Status: Approved design specification awaiting implementation planning
+Status: Revised design specification awaiting final review before implementation planning
 
 ## 1. Product vision
 
@@ -615,47 +615,191 @@ A debug/sandbox option can expose them.
 
 For reproducibility, a shared world code should include the seed, generation settings, game/world-generation version, and the relevant Legacy Library snapshot or identifiers. The same inputs should reproduce the same base generated world within the same compatible version.
 
-## 32. User interface and presentation
+## 32. Procedural languages, naming, and localization
+
+Procedural names are generated from cultural and linguistic profiles rather than from one universal random-syllable generator. Naming should carry historical information about species, populations, factions, territories, settlements, individuals, and earlier owners of a place.
+
+### 32.1 Language and naming profiles
+
+A culture or language family can define data-driven naming rules such as:
+
+- phoneme or syllable inventories;
+- permitted word shapes;
+- common prefixes, suffixes, compounds, and honorifics;
+- personal-name conventions;
+- lineage and family-name conventions;
+- faction-name templates;
+- settlement and territory-name templates;
+- titles and forms of address;
+- transliteration rules for the player's interface language;
+- semantic concepts frequently used in names.
+
+A species does not automatically equal one language. Several factions of the same species may speak different languages, while a multi-species civilization may share one language or develop mixed naming traditions.
+
+Language profiles should be authored enough to have recognizable character while remaining combinatorial and data-driven.
+
+### 32.2 Semantic name generation
+
+Important generated names should retain semantic structure instead of being stored only as final display strings.
+
+A place may be named for:
+
+- geography or climate;
+- an important resource;
+- a founder or ruler;
+- a local species;
+- a historical battle, migration, disaster, or death;
+- a religious or magical phenomenon;
+- a previous faction;
+- a characteristic color, material, smell, sound, or ecological feature.
+
+A faction may be named after a founder, territory, symbol, ancestry, profession, clutch, nest, political form, oath, historical event, or religious concept. Different cultures choose from these patterns with different weights.
+
+This avoids repetitive constructions such as `Adjective + Noun Tribe` and permits names whose form reflects the culture that created them.
+
+### 32.3 Historical names, endonyms, and exonyms
+
+The same entity may have multiple names at once:
+
+- an endonym used by its inhabitants;
+- an exonym used by another culture;
+- a current official name;
+- older historical names;
+- a translated semantic name known to the player's culture.
+
+Names can change when a territory is conquered, a dynasty changes, a disaster redefines the place, a culture assimilates another, or a settlement changes function. Older names remain in historical records and memories.
+
+This allows a territory to preserve visible history. A valley may have an ancient local name, a later imperial administrative name, and a modern colloquial name simultaneously.
+
+### 32.4 Personal naming conventions
+
+Individuals do not all need human-like birth names. Naming rules may depend on lifecycle and culture.
+
+Examples include:
+
+- a name assigned at hatching;
+- a temporary juvenile name replaced after a molt or coming-of-age event;
+- a matrilineal or nest-derived name;
+- a title earned after a deed;
+- a numbered clutch identity in highly colonial societies;
+- no individual name at all until sufficient cognition or social complexity evolves.
+
+A creature's naming history should be recordable so an important NPC can be recognized across title changes, succession, migration, or cultural assimilation.
+
+### 32.5 Mixed languages and cultural drift
+
+Languages and naming traditions can change historically. Long contact, migration, conquest, intermarriage, or faction merger may create mixed naming profiles.
+
+The system does not need a full natural-language evolution simulator. It only needs enough inheritance and weighted borrowing to let later names visibly reflect cultural history.
+
+### 32.6 Legacy Library integration
+
+A saved Legacy species or faction may preserve its language/naming profile as part of the template. If it reappears in a later world, its characteristic names can remain recognizable while still adapting to the new world's history.
+
+A legacy faction used only as an extinct precursor can therefore leave ruins, inscriptions, place names, titles, or loanwords without requiring the original civilization to survive.
+
+### 32.7 Player-facing localization architecture
+
+All player-facing authored text must use localization identifiers rather than hardcoded display strings. Ukrainian can be the first complete language, but the data and UI must be designed so additional localizations can be added without rewriting gameplay code.
+
+Localization applies to:
+
+- UI labels and menus;
+- traits, organs, statuses, injuries, and abilities;
+- species descriptors;
+- event text;
+- tutorials and tooltips;
+- faction and political terminology;
+- generated-name semantic components;
+- relationship and personality descriptions;
+- knowledge-codex entries;
+- world-generation options.
+
+Stable internal IDs remain language-independent.
+
+### 32.8 Grammar-aware procedural localization
+
+Procedural text must not be built by naively concatenating already-translated words. Languages differ in word order, grammatical gender, number, cases, articles, agreement, and inflection.
+
+Generated content therefore passes semantic arguments into a locale-specific template. For example, the game can internally represent a faction name as a nest-type construction whose semantic components are `silver` and `web`. Ukrainian, English, Polish, or Japanese localizations may render those components in different order and grammatical forms.
+
+Where a localization needs it, lexical entries can provide metadata or forms such as:
+
+- grammatical gender;
+- singular/plural behavior;
+- relevant case forms or inflection class;
+- adjective agreement information;
+- animate/inanimate behavior;
+- capitalization rules.
+
+The implementation should support locale-specific grammar helpers rather than putting Ukrainian-specific grammar rules into simulation code.
+
+### 32.9 In-world languages versus UI languages
+
+The language spoken by an in-world culture is distinct from the language selected in the game's settings.
+
+The player interface may be Ukrainian while a faction speaks a fictional generated language. Depending on the controlled creature's knowledge, the UI may show:
+
+- only the untranslated endonym;
+- a transliterated form;
+- a partial interpretation;
+- the full translated meaning after the language is learned.
+
+This lets language knowledge become part of discovery without preventing ordinary localization.
+
+### 32.10 0.1 requirement
+
+Version 0.1 does not need full historical language drift or large-scale procedural linguistics. It does require the architectural foundation:
+
+- no gameplay-critical user-facing text hardcoded into logic;
+- Ukrainian localization resources as the initial complete locale;
+- locale-switching support in the UI layer;
+- a small data-driven naming profile sufficient for prototype individuals, nests, groups, and local territories;
+- semantic/template-based generated names rather than final-language string concatenation.
+
+Full cultural language evolution, exonyms, historical renaming, and Legacy naming inheritance remain later systems.
+
+## 33. User interface and presentation
 
 The UI follows the rule: minimal at the surface, deep on demand.
 
-### 32.1 Main HUD
+### 33.1 Main HUD
 
 The ordinary HUD should show only immediate survival and action information such as condition, energy/hunger, meaningful injuries, active abilities, and time state.
 
-### 32.2 Body screen
+### 33.2 Body screen
 
 A large side-view or three-quarter character view shows anatomy, visible mutations, injuries, organs, and functional body parts. This is the primary way to appreciate visual evolution that would be less readable in top-down gameplay.
 
-### 32.3 Evolution screen
+### 33.3 Evolution screen
 
 The player sees current traits, known potential, and unknown areas. The game does not reveal the entire universal evolution space.
 
 Before offspring hatch, the game can provide probabilistic biological predictions instead of exact outcomes.
 
-### 32.4 Hub presentation
+### 33.4 Hub presentation
 
 Important nest interactions can use larger side-view scenes showing the matriarch, offspring, siblings, partners, eggs, remains, trophies, and nest structures.
 
-### 32.5 Lineage screen
+### 33.5 Lineage screen
 
 The lineage interface supports both close family inspection and centuries-scale branch history. Known branch states may include active, independent, allied, hostile, unknown, or extinct. Distant information can become outdated.
 
-### 32.6 World and faction knowledge
+### 33.6 World and faction knowledge
 
 Maps and faction pages display only known information. Contact timestamps matter; political and population data may be stale.
 
-### 32.7 Knowledge Codex
+### 33.7 Knowledge Codex
 
 The lineage's codex can track discovered species, traits, food, toxins, diseases, materials, technologies, magical phenomena, factions, and historical events. Knowledge can be lost if its carriers and records are destroyed.
 
-## 33. Active pause
+## 34. Active pause
 
 The player can slow or pause combat to inspect immediate threats, select an ability, choose a movement target, select an attack target or body part where relevant, inspect injuries, change a stance, or use an item.
 
 This remains control of one creature, not RTS control of the whole colony.
 
-## 34. Major accomplishments instead of a final victory
+## 35. Major accomplishments instead of a final victory
 
 The sandbox has no required ending. Long-term milestones can include:
 
@@ -673,11 +817,11 @@ The sandbox has no required ending. Long-term milestones can include:
 
 These are achievements and historical milestones, not mandatory win conditions.
 
-## 35. Version 0.1 vertical slice
+## 36. Version 0.1 vertical slice
 
 Version 0.1 exists to answer one question: is the immediate generation loop enjoyable before the full simulation is built?
 
-### 35.1 Included scope
+### 36.1 Included scope
 
 - Godot-based 2D top-down prototype with large-character side-view screens.
 - One procedural environment combining forest and underground burrows.
@@ -704,8 +848,10 @@ Version 0.1 exists to answer one question: is the immediate generation loop enjo
 - Death fallback to another living eligible relative where one exists.
 - Basic lineage screen.
 - Large side-view body/nest presentation sufficient to see evolutionary differences.
+- Localization-ready text/resource layer with Ukrainian as the initial complete locale.
+- Basic data-driven naming profiles for prototype individuals, nests, groups, and local territories.
 
-### 35.2 Explicitly excluded from 0.1
+### 36.2 Explicitly excluded from 0.1
 
 - full multi-region geopolitics;
 - complex states and kingdoms;
@@ -719,10 +865,11 @@ Version 0.1 exists to answer one question: is the immediate generation loop enjo
 - complete civilization management;
 - full precursor systems;
 - full cross-world meta-progression.
+- full historical language drift, exonym simulation, or large-scale procedural linguistics.
 
 The architecture should avoid obvious dead ends for these future systems, but 0.1 must not implement them prematurely.
 
-### 35.3 Success criteria
+### 36.3 Success criteria
 
 The vertical slice succeeds if:
 
@@ -735,7 +882,7 @@ The vertical slice succeeds if:
 7. The side-view presentation makes body evolution visually legible despite top-down exploration.
 8. The lineage can survive at least several generations without requiring the future large-scale systems.
 
-## 36. Non-goals and constraints
+## 37. Non-goals and constraints
 
 The design intentionally avoids several traps:
 
@@ -750,7 +897,7 @@ The design intentionally avoids several traps:
 - no requirement that the player become an empire-management cursor;
 - no universal identical lifecycle or reproduction mechanic for all species.
 
-## 37. Architectural implications for future planning
+## 38. Architectural implications for future planning
 
 The implementation plan should preserve separate data models for:
 
@@ -769,8 +916,13 @@ The implementation plan should preserve separate data models for:
 - world-zone state;
 - simulation level of detail;
 - future magic-law definitions;
+- language/culture naming profile;
+- semantic generated-name record with historical aliases;
+- localization keys, locale templates, and grammar metadata;
 - future legacy templates.
 
 Species definitions must not be implemented as one hardcoded character class per possible hybrid. A creature should be assembled from a body plan plus modular biological traits and individual state.
 
 The 0.1 implementation should prioritize testable, isolated systems and data-driven definitions so that traits, species, offspring rules, and future world content can be added without rewriting the core creature controller.
+
+Localization and procedural naming must remain downstream of semantic game data: simulation code produces stable IDs and structured meaning, while locale-specific resources decide how that meaning is rendered to the player.
