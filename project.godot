@@ -1,0 +1,70 @@
+; Engine configuration file.
+; Edit through the Godot editor when possible.
+
+config_version=5
+
+[application]
+
+config/name="Monster Lineage Sandbox"
+run/main_scene="res://scenes/main.tscn"
+
+[autoload]
+
+RngService="*res://src/autoload/rng_service.gd"
+GameTime="*res://src/autoload/game_time.gd"
+
+[internationalization]
+
+locale/fallback="uk"
+
+[input]
+
+move_up={
+"deadzone": 0.5,
+"events": []
+}
+move_down={
+"deadzone": 0.5,
+"events": []
+}
+move_left={
+"deadzone": 0.5,
+"events": []
+}
+move_right={
+"deadzone": 0.5,
+"events": []
+}
+slow_time={
+"deadzone": 0.5,
+"events": []
+}
+bite={
+"deadzone": 0.5,
+"events": []
+}
+place_web={
+"deadzone": 0.5,
+"events": []
+}
+interact={
+"deadzone": 0.5,
+"events": []
+}
+open_body={
+"deadzone": 0.5,
+"events": []
+}
+open_lineage={
+"deadzone": 0.5,
+"events": []
+}
+open_nest={
+"deadzone": 0.5,
+"events": []
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
