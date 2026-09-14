@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LocalizedLexeme" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/localized_lexeme.gd" id="1_lexeme"]
+
+[resource]
+script = ExtResource("1_lexeme")
+id = &"uk_basic"
+forms_by_locale = {
+"uk": {
+&"burrow": {&"gen": "Нори", &"nom": "Нора"},
+&"shadow": {&"adj_gen_f": "Тіньової", &"nom": "Тіньова"},
+&"silver": {&"adj_gen_f": "Срібної", &"nom": "Срібна"},
+&"web": {&"gen": "Павутини", &"nom": "Павутина"}
+}
+}
