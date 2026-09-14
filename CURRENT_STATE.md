@@ -1,4 +1,4 @@
-# MonsterLineage Current State
+﻿# MonsterLineage Current State
 
 Last updated: 2026-09-14
 
@@ -55,65 +55,67 @@ Run the full suite:
 
 ```powershell
 godot --headless --path . --script res://tests/run_all.gd
+```
 
 Smoke boot:
 
+```powershell
 godot --headless --path . --quit-after 2
+```
 
 There is currently no GitHub CI workflow. Test success must therefore be verified locally.
 
-Next task
-Task 4 — Individual creature state
+## Next task
+
+### Task 4 — Individual creature state
 
 Planned scope:
 
-needs
-injuries
-personality
-food memory
-significant-event memory
-aggregate CreatureState
-tests/test_creature_state.gd
+- needs
+- injuries
+- personality
+- food memory
+- significant-event memory
+- aggregate `CreatureState`
+- `tests/test_creature_state.gd`
 
 Task 4 should follow the existing 0.1 implementation plan rather than being redesigned independently.
 
-Authoritative project documents
+## Authoritative project documents
 
 Implementation plan:
 
-docs/superpowers/plans/2026-09-14-v0-1-vertical-slice.md
+`docs/superpowers/plans/2026-09-14-v0-1-vertical-slice.md`
 
 Design specification:
 
-docs/superpowers/specs/2026-09-14-monster-lineage-sandbox-design.md
+`docs/superpowers/specs/2026-09-14-monster-lineage-sandbox-design.md`
 
 Repository code and tests are the source of truth for what is actually implemented.
 
-Branch state
-main — canonical integration/default branch
-feat/v0-1-implementation — previous integration branch
+## Branch state
 
-New work should normally happen on a task/feature branch and be merged into main after verification.
+- `main` — canonical integration/default branch
+- `feat/v0-1-implementation` — previous integration branch
 
-Known status
-Tasks 1–3 are merged.
-The current test runner contains all three implemented suites.
-Task 4 is not implemented yet.
-No save/load system is planned for v0.1.
-Prototype art is intentionally non-blocking for current system work.
-Update rule
+New work should normally happen on a task/feature branch and be merged into `main` after verification.
 
-Update this file whenever a task is merged into main or when a significant blocker changes.
+## Known status
+
+- Tasks 1–3 are merged.
+- The current test runner contains all three implemented suites.
+- Task 4 is not implemented yet.
+- No save/load system is planned for v0.1.
+- Prototype art is intentionally non-blocking for current system work.
+
+## Update rule
+
+Update this file whenever a task is merged into `main` or when a significant blocker changes.
 
 Keep it factual and current. Record:
 
-what is actually merged
-what is currently in progress
-verification gaps or blockers
-the next task
-important workflow changes
-
-Коміт назви:
-
-```text
-docs: fix current project state
+- what is actually merged
+- what is currently in progress
+- verification gaps or blockers
+- the next task
+- important workflow changes
