@@ -3,6 +3,7 @@ extends "res://tests/test_case.gd"
 const ZoneGeneratorData = preload("res://src/world/zone_generator.gd")
 const ZoneStateData = preload("res://src/world/zone_state.gd")
 const GeneratedNameData = preload("res://src/naming/generated_name.gd")
+const MAIN_SCENE = preload("res://scenes/main.tscn")
 
 const REQUIRED_CELL_TYPES: Array[StringName] = [
 	&"forest_floor",
@@ -20,12 +21,19 @@ const TRAVERSABLE_CELL_TYPES: Array[StringName] = [
 ]
 
 func run() -> void:
+	_test_main_scene_loads_without_generated_class_cache()
 	_test_same_seed_reproduces_zone()
 	_test_different_seeds_vary_zone()
 	_test_required_terrain_and_semantic_locations()
 	_test_player_reaches_food_spawn()
 	_test_generation_is_finite_for_seed_range()
 	_test_zone_data_is_scene_independent()
+
+func _test_main_scene_loads_without_generated_class_cache() -> void:
+	assert_true(MAIN_SCENE.can_instantiate(), "main scene and world presentation load from explicit source dependencies")
+	for script_path in ["res://src/game/main.gd", "res://src/world/world_view.gd"]:
+		var script := load(script_path) as Script
+		assert_true(script != null and script.can_instantiate(), "%s compiles without generated cache state" % script_path)
 
 func _test_same_seed_reproduces_zone() -> void:
 	var first: Variant = ZoneGeneratorData.new().generate(424242, 64, 64)

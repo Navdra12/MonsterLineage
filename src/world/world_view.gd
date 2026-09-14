@@ -4,7 +4,7 @@ extends Node2D
 ## ZoneGenerator; this node only paints cells and exposes traversal metadata.
 
 const ZoneStateData = preload("res://src/world/zone_state.gd")
-const TILE_TEXTURE = preload("res://assets/prototype/tiles.svg")
+const TILE_SOURCE_PATH := "res://assets/prototype/tiles.svg"
 
 const CELL_SIZE := Vector2i(16, 16)
 const BLOCKED_TYPES: Array[StringName] = [&"tree_block", &"burrow_wall"]
@@ -41,13 +41,22 @@ func _ensure_tile_set() -> int:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = CELL_SIZE
 	var atlas := TileSetAtlasSource.new()
-	atlas.texture = TILE_TEXTURE
+	atlas.texture = _load_tile_texture()
 	atlas.texture_region_size = CELL_SIZE
 	for x in TILE_COORDS.size():
 		atlas.create_tile(Vector2i(x, 0))
 	var source_id := tile_set.add_source(atlas)
 	tile_layer.tile_set = tile_set
 	return source_id
+
+func _load_tile_texture() -> ImageTexture:
+	var svg_source := FileAccess.get_file_as_string(TILE_SOURCE_PATH)
+	var image := Image.new()
+	var load_error := image.load_svg_from_string(svg_source)
+	if load_error != OK:
+		push_error("Unable to decode prototype tile SVG: %s" % error_string(load_error))
+		return null
+	return ImageTexture.create_from_image(image)
 
 func _clear_generated_presentation() -> void:
 	tile_layer.clear()
