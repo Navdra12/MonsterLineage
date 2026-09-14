@@ -1,7 +1,7 @@
 # Monster Lineage Sandbox — Game Design Specification
 
 Date: 2026-09-14
-Status: Approved design draft for implementation planning
+Status: Approved design specification awaiting implementation planning
 
 ## 1. Product vision
 
@@ -302,7 +302,7 @@ A child may be dependent on adults, unable to hunt effectively, vulnerable to si
 
 The player's choice of next body and the nest's political succession are separate systems.
 
-After generational transfer, the former player character becomes an NPC. Control cannot be transferred back.
+Once a living daughter exists, the player may voluntarily transfer control to her at any point; the transfer is irreversible. After generational transfer, the former player character becomes an NPC. Control cannot be transferred back.
 
 If the current controlled creature dies without living daughters, the lineage may continue through another accessible living relative: sisters, nieces, aunts, cousins, or other sufficiently connected branches.
 
@@ -612,6 +612,8 @@ The player controls visibility/frequency, not the actual generated laws of magic
 By default the player does not receive omniscient generation output. Existing hidden species, surviving precursors, magical rules, unknown ruins, and distant faction states remain unknown until discovered.
 
 A debug/sandbox option can expose them.
+
+For reproducibility, a shared world code should include the seed, generation settings, game/world-generation version, and the relevant Legacy Library snapshot or identifiers. The same inputs should reproduce the same base generated world within the same compatible version.
 
 ## 32. User interface and presentation
 
