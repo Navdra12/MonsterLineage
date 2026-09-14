@@ -1,6 +1,6 @@
 ﻿# MonsterLineage Current State
 
-Last updated: 2026-09-14
+Last updated: 2026-09-15
 
 ## Active milestone
 
@@ -39,6 +39,15 @@ Canonical integration branch: `main`.
 - genome value access and cloning
 - genome/resource validation tests
 
+### Task 4 — Individual creature state
+
+- needs and bounded progression
+- lightweight semantic body-part injuries
+- personality history with suspected and visible thresholds
+- food memory and preference/aversion tracking
+- significant-event memory with importance-based pruning
+- multiplayer-safe `CreatureState` simulation data
+
 ## Current automated tests
 
 Central runner:
@@ -50,6 +59,7 @@ Registered suites:
 - `tests/test_rng_service.gd`
 - `tests/test_localization_and_naming.gd`
 - `tests/test_genome.gd`
+- `tests/test_creature_state.gd`
 
 Run the full suite:
 
@@ -67,19 +77,14 @@ There is currently no GitHub CI workflow. Test success must therefore be verifie
 
 ## Next task
 
-### Task 4 — Individual creature state
+### Task 5 — Deterministic forest-and-burrow zone generation
 
 Planned scope:
 
-- needs
-- injuries
-- personality
-- food memory
-- significant-event memory
-- aggregate `CreatureState`
-- `tests/test_creature_state.gd`
-
-Task 4 should follow the existing 0.1 implementation plan rather than being redesigned independently.
+- deterministic semantic zone generation
+- forest and underground burrow terrain
+- stable spawn points and nest candidates
+- headless zone-generation tests
 
 ## Authoritative project documents
 
@@ -102,9 +107,10 @@ New work should normally happen on a task/feature branch and be merged into `mai
 
 ## Known status
 
-- Tasks 1–3 are merged.
-- The current test runner contains all three implemented suites.
-- Task 4 is not implemented yet.
+- Tasks 1–4 are implemented and merged into `main`.
+- The current test runner contains all four implemented suites.
+- Task 5 is the next implementation task.
+- Multiplayer remains a supported long-term direction and is not part of the v0.1 implementation.
 - No save/load system is planned for v0.1.
 - Prototype art is intentionally non-blocking for current system work.
 
