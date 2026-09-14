@@ -7,6 +7,7 @@ Do not rewrite old decisions merely because the implementation evolves. If a dec
 Primary references:
 
 - `docs/superpowers/specs/2026-09-14-monster-lineage-sandbox-design.md`
+- `docs/superpowers/specs/2026-09-14-multiplayer-coop-design.md`
 - `docs/superpowers/plans/2026-09-14-v0-1-vertical-slice.md`
 - `CURRENT_STATE.md`
 
@@ -281,6 +282,181 @@ New implementation work should normally happen in task or feature branches and b
 **Reason:** A stable canonical branch prevents task branches and old integration branches from becoming competing sources of truth.
 
 ---
+
+
+---
+
+## D016 — Multiplayer is a supported long-term project direction
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Project-wide
+
+Private co-op is an approved long-term direction for MonsterLineage.
+
+The first multiplayer target is two players, but ownership structures must not hard-code exactly two slots. The current v0.1 milestone remains a single-player vertical slice.
+
+**Reason:** Multiplayer should influence architectural boundaries now without expanding v0.1 into a networking milestone.
+
+---
+
+## D017 — Multiplayer uses a host-authoritative model
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer architecture
+
+The host is authoritative for world simulation, time, combat outcomes, AI, genetics, important RNG/events, ownership, lineage transitions, and saves.
+
+Clients send input and requests rather than authoritative gameplay results. Client prediction and interpolation may improve responsiveness, but host state remains final.
+
+**Reason:** A single authority simplifies synchronization, validation, recovery, and internet play.
+
+---
+
+## D018 — Player ownership is external to creature state
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Architecture
+
+`CreatureState` represents a creature, not a player.
+
+Player/network ownership is stored externally through systems such as `PlayerSlot` and player registries. Creature simulation data must remain valid under human control, AI control, or no active controller.
+
+**Reason:** The same creature may move between player control and AI over its life, and Task 4 must not embed single-player-only assumptions.
+
+---
+
+## D019 — Player lineages are separate from biological family history
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer / lineage
+
+Each player has a separate `PlayerLineage`. Biological ancestry is tracked independently through world family relationships.
+
+Player lineages may share ancestors or descendants without merging ownership. A creature may have at most one active player controller.
+
+**Reason:** Shared offspring and family branches must remain biologically coherent without ambiguous multiplayer ownership.
+
+---
+
+## D020 — The world uses one authoritative global clock
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Simulation architecture
+
+All active zones share one `WorldClock`.
+
+No client or zone may advance authoritative simulation beyond the host's assigned global tick. Slowdown and full pause are global session-level time controls. Any connected player may request either; the host applies and replicates the authoritative result.
+
+**Reason:** Separate time progression per player or zone would create irreconcilable world timelines.
+
+---
+
+## D021 — Disconnect supports protected Frozen and AI modes
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer lifecycle
+
+A leaving player may choose AI control or protected Frozen state.
+
+Protected Frozen removes the creature from active simulation and prevents the host from later overriding that choice to AI. On reconnect, the creature returns at its disconnect location unless that position is invalid or objectively lethally unsafe, in which case a nearby safe fallback is used.
+
+**Reason:** Players need control over what happens to their creature while offline in a persistent shared world.
+
+---
+
+## D022 — Shared saves are host-authoritative but replicated for recovery
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Persistence / multiplayer
+
+The current host owns the authoritative save during a live session.
+
+Confirmed save revisions are replicated to connected players as non-authoritative backups. After host failure, the live session stops; a player with the newest valid backup may later host the recovered world.
+
+Seamless live host migration is not required initially.
+
+**Reason:** This protects shared progress against crashes, power outages, and connection loss without introducing split-brain simulation.
+
+---
+
+## D023 — Saves use snapshots, deltas, revisions, and atomic writes
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Persistence
+
+The future save system should use periodic full snapshots plus incremental deltas and compaction.
+
+Regular checkpoints target roughly a 10-second crash-loss window, with immediate checkpoints for critical events. Writes preserve the previous confirmed revision until the new revision is complete and validated.
+
+Saves carry stable identity, revision, branch information, format version, and checksum data.
+
+**Reason:** Frequent recovery checkpoints must not cause large gameplay stalls, unbounded save growth, or corruption during sudden power loss.
+
+---
+
+## D024 — Multi-zone co-op is a supported future capability
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer / simulation
+
+Players should eventually be able to occupy different active zones.
+
+The first multiplayer implementation may keep active-zone simulation on the host. Zone and player architecture must not require all players to share one `current_zone_id`.
+
+**Reason:** Independent exploration is a desired co-op capability and should not require rewriting player ownership later.
+
+---
+
+## D025 — Delegated zone simulation is optional and non-authoritative
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Future performance architecture
+
+If profiling later shows that multiple active zones overload the host, the host may delegate bounded zone-simulation work to client machines.
+
+Delegated clients remain workers, not authorities. The host owns the target tick, accepts or rejects results, and retains authoritative world state.
+
+Delegated simulation is not required until profiling demonstrates a need.
+
+**Reason:** Client machines may help distribute simulation cost without allowing different parts of the world to advance independently.
+
+---
+
+## D026 — Networking transport is separated from gameplay logic
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer architecture
+
+Gameplay and simulation depend on a `NetworkSession` abstraction rather than directly on a specific transport.
+
+LAN/direct connection is the practical first connection mode. Invite/relay support may be added later over the same gameplay networking model.
+
+**Reason:** Transport choice should not force changes to combat, genetics, creature control, or other simulation systems.
+
+---
+
+## D027 — Friendly fire is a session rule
+
+**Date:** 2026-09-14  
+**Status:** Accepted  
+**Scope:** Multiplayer rules
+
+Friendly fire is disabled by default in persistent co-op and may be enabled by host session rules.
+
+Future skirmish modes may use different PvP, team, spawn, and victory rules while reusing the same multiplayer foundation.
+
+**Reason:** Private co-op and future competitive play need different policy without requiring separate networking cores.
 
 # Adding future decisions
 
