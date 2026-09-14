@@ -4,6 +4,7 @@ const SUITE_SCRIPTS: Array[Script] = [
         preload("res://tests/test_rng_service.gd"),
         preload("res://tests/test_localization_and_naming.gd"),
         preload("res://tests/test_genome.gd"),
+        preload("res://tests/test_creature_state.gd"),
 ]
 
 func _initialize() -> void:
