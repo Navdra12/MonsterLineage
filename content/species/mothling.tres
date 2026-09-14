@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SpeciesDef" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/data/species_def.gd" id="1_species"]
+[ext_resource type="Script" path="res://src/genetics/genome.gd" id="2_genome"]
+[ext_resource type="Resource" path="res://content/body_plans/mothling_small.tres" id="3_body"]
+
+[sub_resource type="Resource" id="Genome_base"]
+script = ExtResource("2_genome")
+body_plan_id = &"mothling_small"
+trait_values = Dictionary[StringName, float]({
+&"body_size": 0.85,
+&"move_speed": 1.10,
+&"chitin": 0.60,
+&"metabolism": 1.20,
+&"sensory_range": 1.50,
+&"forelimb_dexterity": 0.40,
+&"membrane_potential": 1.20,
+&"regeneration": 0.15
+})
+
+[resource]
+script = ExtResource("1_species")
+id = &"mothling"
+display_key = &"species.mothling"
+body_plan = ExtResource("3_body")
+base_genome = SubResource("Genome_base")
+cognition_band = &"sapient"
+diet_tags = Array[StringName]([&"nectar", &"fruit"])
+reproduction_tags = Array[StringName]([&"prototype_clutch"])

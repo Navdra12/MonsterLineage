@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BodyPlanDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/body_plan_def.gd" id="1_body"]
+
+[resource]
+script = ExtResource("1_body")
+id = &"mothling_small"
+display_key = &"BODY_PLAN_MOTHLING_SMALL"
+base_parts = Array[StringName]([&"head", &"thorax", &"abdomen", &"antennae", &"mouth", &"wing_left", &"wing_right", &"leg_1_left", &"leg_1_right", &"leg_2_left", &"leg_2_right", &"leg_3_left", &"leg_3_right"])
+movement_capabilities = Array[StringName]([&"ground_move"])
+size_class = 1

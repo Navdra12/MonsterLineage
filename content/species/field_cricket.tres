@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SpeciesDef" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/data/species_def.gd" id="1_species"]
+[ext_resource type="Script" path="res://src/genetics/genome.gd" id="2_genome"]
+[ext_resource type="Resource" path="res://content/body_plans/insect_small.tres" id="3_body"]
+
+[sub_resource type="Resource" id="Genome_base"]
+script = ExtResource("2_genome")
+body_plan_id = &"insect_small"
+trait_values = Dictionary[StringName, float]({
+&"body_size": 0.60,
+&"move_speed": 1.25,
+&"chitin": 0.50,
+&"metabolism": 1.00,
+&"sensory_range": 1.10,
+&"forelimb_dexterity": 0.05,
+&"membrane_potential": 0.00,
+&"regeneration": 0.05
+})
+
+[resource]
+script = ExtResource("1_species")
+id = &"field_cricket"
+display_key = &"species.field_cricket"
+body_plan = ExtResource("3_body")
+base_genome = SubResource("Genome_base")
+cognition_band = &"instinctive"
+diet_tags = Array[StringName]([&"herbivore"])
+reproduction_tags = Array[StringName]([])

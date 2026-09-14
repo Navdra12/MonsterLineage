@@ -2,6 +2,7 @@ extends SceneTree
 
 const SUITE_SCRIPTS: Array[Script] = [
 	preload("res://tests/test_rng_service.gd"),
+	preload("res://tests/test_genome.gd"),
 ]
 
 func _initialize() -> void:

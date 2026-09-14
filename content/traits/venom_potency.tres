@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TraitDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/trait_def.gd" id="1_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+id = &"venom_potency"
+display_key = &"TRAIT_VENOM_POTENCY"
+min_value = 0.30
+max_value = 1.70
+mutation_sigma = 0.08
+inheritance_weight = 1.0

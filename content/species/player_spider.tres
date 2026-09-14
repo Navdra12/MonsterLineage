@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="SpeciesDef" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/data/species_def.gd" id="1_species"]
+[ext_resource type="Script" path="res://src/genetics/genome.gd" id="2_genome"]
+[ext_resource type="Resource" path="res://content/body_plans/arachnid_small.tres" id="3_body"]
+
+[sub_resource type="Resource" id="Genome_base"]
+script = ExtResource("2_genome")
+body_plan_id = &"arachnid_small"
+trait_values = Dictionary[StringName, float]({
+&"body_size": 1.00,
+&"move_speed": 1.00,
+&"web_strength": 1.00,
+&"web_adhesion": 1.00,
+&"venom_potency": 1.00,
+&"venom_capacity": 1.00,
+&"chitin": 1.00,
+&"metabolism": 1.00,
+&"sensory_range": 1.00,
+&"forelimb_dexterity": 0.15,
+&"membrane_potential": 0.00,
+&"regeneration": 0.10
+})
+
+[resource]
+script = ExtResource("1_species")
+id = &"player_spider"
+display_key = &"species.player_spider"
+body_plan = ExtResource("3_body")
+base_genome = SubResource("Genome_base")
+cognition_band = &"cunning"
+diet_tags = Array[StringName]([&"carnivore"])
+reproduction_tags = Array[StringName]([&"prototype_clutch"])
