@@ -1,7 +1,7 @@
 # Monster Lineage Sandbox — Game Design Specification
 
 Date: 2026-09-14
-Status: Revised design specification awaiting final review before implementation planning
+Status: Approved design specification; implementation planning started
 
 ## 1. Product vision
 
