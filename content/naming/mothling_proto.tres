@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="NamingProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/naming_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"mothling_proto"
+onsets = Array[String](["l", "m", "n", "ph", "s"])
+nuclei = Array[String](["a", "e", "i", "u"])
+codas = Array[String](["l", "m", "n", "ra", "th"])
+min_syllables = 2
+max_syllables = 3
+name_kind_strategies = {
+&"group_descriptor": [{"tokens": [&"silver", &"web"], "weight": 1.0}],
+&"nest_descriptor": [{"tokens": [&"shadow", &"burrow"], "weight": 1.0}],
+&"territory_descriptor": [{"tokens": [&"silver", &"burrow"], "weight": 1.0}]
+}

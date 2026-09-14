@@ -1,0 +1,17 @@
+keys,uk,en
+ui.hunger,Голод,Hunger
+ui.energy,Енергія,Energy
+ui.condition,Стан,Condition
+ui.body,Тіло,Body
+ui.lineage,Родовід,Lineage
+ui.nest,Лігво,Nest
+ui.locale,Мова,Language
+name.nest_descriptor,Лігво %s %s,Nest of the %s %s
+name.territory_descriptor,Земля %s %s,Territory of the %s %s
+name.group_descriptor,Гурт %s %s,Group of the %s %s
+species.player_spider,Павучиця,Spider
+species.mothling,Молелітка,Mothling
+species.scarabkin,Скарабейка,Scarabkin
+species.burrow_newt,Норова тритонка,Burrow Newt
+species.field_cricket,Польовий цвіркун,Field Cricket
+species.frog_predator,Хижа жаба,Frog Predator

@@ -12,10 +12,12 @@ run/main_scene="res://scenes/main.tscn"
 
 RngService="*res://src/autoload/rng_service.gd"
 GameTime="*res://src/autoload/game_time.gd"
+LocaleService="*res://src/autoload/locale_service.gd"
 
 [internationalization]
 
 locale/fallback="uk"
+locale/translations=PackedStringArray("res://localization/strings.uk.translation", "res://localization/strings.en.translation")
 
 [input]
 

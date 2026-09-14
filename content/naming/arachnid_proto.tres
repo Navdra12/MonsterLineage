@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="NamingProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data/naming_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"arachnid_proto"
+onsets = Array[String](["sk", "th", "v", "kr", "z"])
+nuclei = Array[String](["a", "i", "o", "ae"])
+codas = Array[String](["r", "k", "th", "n", "s"])
+min_syllables = 1
+max_syllables = 2
+name_kind_strategies = {
+&"group_descriptor": [{"tokens": [&"shadow", &"web"], "weight": 1.0}],
+&"nest_descriptor": [{"tokens": [&"silver", &"web"], "weight": 3.0}, {"tokens": [&"shadow", &"burrow"], "weight": 1.0}],
+&"territory_descriptor": [{"tokens": [&"silver", &"burrow"], "weight": 1.0}]
+}
