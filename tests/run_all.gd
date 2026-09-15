@@ -7,6 +7,7 @@ const SUITE_SCRIPTS: Array[Script] = [
         preload("res://tests/test_creature_state.gd"),
 	preload("res://tests/test_zone_generator.gd"),
 	preload("res://tests/test_ui_models.gd"),
+	preload("res://tests/test_web_system.gd"),
 ]
 
 func _initialize() -> void:

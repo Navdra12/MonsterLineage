@@ -23,11 +23,12 @@ const AGE_SPEED_MODIFIERS := {
 
 var state: CreatureStateData
 var zone: ZoneStateData
-var local_input_enabled := true
+@export var local_input_enabled := true
 var desired_direction := Vector2.ZERO
 
 var _body_plan: BodyPlanData
 var _death_emitted := false
+var _movement_restraints: Dictionary = {}
 
 func bind_state(new_state: CreatureStateData) -> void:
 	state = new_state
@@ -61,7 +62,13 @@ func movement_speed() -> float:
 		return 0.0
 	var genome_speed := maxf(state.genome.get_value(&"move_speed"), 0.0)
 	var age_modifier := float(AGE_SPEED_MODIFIERS.get(state.age_stage, 1.0))
-	return BASE_MOVE_SPEED * genome_speed * age_modifier * _leg_injury_modifier()
+	return BASE_MOVE_SPEED * genome_speed * age_modifier * _leg_injury_modifier() * _restraint_modifier()
+
+func apply_movement_restraint(source_id: int, multiplier: float) -> void:
+	_movement_restraints[source_id] = clampf(multiplier, 0.0, 1.0)
+
+func clear_movement_restraint(source_id: int) -> void:
+	_movement_restraints.erase(source_id)
 
 func velocity_for_direction(direction: Vector2, delta: float) -> Vector2:
 	if state == null or state.condition <= 0.0:
@@ -143,6 +150,12 @@ func _leg_injury_modifier() -> float:
 	var injury := state.injuries.get_injury(&"legs")
 	var severity := float(injury.get(&"severity", 0.0))
 	return clampf(1.0 - severity * 0.60, 0.20, 1.0)
+
+func _restraint_modifier() -> float:
+	var modifier := 1.0
+	for value: float in _movement_restraints.values():
+		modifier *= clampf(value, 0.0, 1.0)
+	return clampf(modifier, 0.0, 1.0)
 
 func _check_death() -> void:
 	if state == null or _death_emitted or state.condition > 0.0:

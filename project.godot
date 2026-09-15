@@ -47,7 +47,7 @@ bite={
 }
 place_web={
 "deadzone": 0.5,
-"events": []
+"events": [Object(InputEventMouseButton,"button_index":1)]
 }
 interact={
 "deadzone": 0.5,
