@@ -13,7 +13,7 @@ const WEB_SEGMENT_SCENE = preload("res://scenes/web_segment.tscn")
 
 const CELL_SIZE := Vector2(16.0, 16.0)
 const MAX_PLACEMENT_DISTANCE := 48.0
-const FED_HUNGER_LIMIT := 75.0
+const NON_STARVING_HUNGER_LIMIT := 90.0
 const SENSORY_RANGE_PIXELS := 96.0
 const HIGH_IMPORTANCE := 0.9
 const VALID_TERRAIN: Array[StringName] = [
@@ -84,7 +84,7 @@ func silk_reserve(creature_id: StringName) -> float:
 func advance_silk(owner: CreatureStateData, delta_seconds: float) -> void:
 	if owner == null or owner.genome == null or delta_seconds <= 0.0:
 		return
-	if owner.needs.hunger > FED_HUNGER_LIMIT or not _silk_reserves.has(owner.creature_id):
+	if owner.needs.hunger > NON_STARVING_HUNGER_LIMIT or not _silk_reserves.has(owner.creature_id):
 		return
 	var strength := maxf(owner.genome.get_value(&"web_strength"), 0.0)
 	var adhesion := maxf(owner.genome.get_value(&"web_adhesion"), 0.0)

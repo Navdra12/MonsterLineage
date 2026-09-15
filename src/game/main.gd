@@ -81,7 +81,24 @@ func _physics_process(_delta: float) -> void:
 		_cricket_drift = 1.0
 	elif web_test_cricket.position.x >= _cricket_anchor.x + 16.0:
 		_cricket_drift = -1.0
-	web_test_cricket.set_move_direction(Vector2(_cricket_drift, 0.0))
+	var preferred_direction := Vector2(_cricket_drift, 0.0)
+	for candidate: Vector2 in [preferred_direction, -preferred_direction, Vector2.DOWN, Vector2.UP]:
+		if _web_test_direction_is_traversable(candidate):
+			if not is_zero_approx(candidate.x):
+				_cricket_drift = candidate.x
+			web_test_cricket.set_move_direction(candidate)
+			return
+	web_test_cricket.set_move_direction(Vector2.ZERO)
+
+func _web_test_direction_is_traversable(direction: Vector2) -> bool:
+	if zone == null or not is_instance_valid(web_test_cricket) or direction.is_zero_approx():
+		return false
+	var current_cell := Vector2i(
+		floori(web_test_cricket.position.x / CELL_SIZE.x),
+		floori(web_test_cricket.position.y / CELL_SIZE.y)
+	)
+	var cell_offset := Vector2i(int(signf(direction.x)), int(signf(direction.y)))
+	return web_test_cricket.can_enter_cell(zone.cell_at(current_cell + cell_offset))
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("place_web") or starting_creature == null:

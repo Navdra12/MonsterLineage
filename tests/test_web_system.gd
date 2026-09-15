@@ -5,6 +5,7 @@ const WEB_SEGMENT_PATH := "res://src/gameplay/web/web_segment.gd"
 const CREATURE_ACTOR_PATH := "res://src/creatures/creature_actor.gd"
 const CreatureStateData = preload("res://src/creatures/creature_state.gd")
 const ZoneStateData = preload("res://src/world/zone_state.gd")
+const GameTimeData = preload("res://src/autoload/game_time.gd")
 const PLAYER_SPIDER = preload("res://content/species/player_spider.tres")
 const FIELD_CRICKET = preload("res://content/species/field_cricket.tres")
 const MAIN_SCENE = preload("res://scenes/main.tscn")
@@ -29,12 +30,14 @@ func run() -> void:
 	_test_larger_targets_receive_less_restraint()
 	_test_placement_range_and_semantic_terrain()
 	_test_silk_cost_rejection_and_fed_regeneration()
+	_test_runtime_tick_restores_depleted_silk_and_placement()
 	_test_owner_is_ignored_and_intruder_emits_stable_ids()
 	_test_restraint_is_transient_and_breakage_clears_it()
 	_test_struggle_reduces_durability()
 	_test_vibration_memory_obeys_genome_sensory_range()
 	_test_creature_state_has_no_player_or_network_ownership()
 	_test_manual_composition_uses_left_mouse_and_non_ai_cricket()
+	_test_debug_cricket_turns_away_from_blocked_terrain()
 	_free_nodes()
 
 func _test_all_previous_suites_remain_registered() -> void:
@@ -122,6 +125,31 @@ func _test_silk_cost_rejection_and_fed_regeneration() -> void:
 	assert_true(context.system.silk_reserve(owner.creature_id) > depleted, "fed creatures regenerate silk")
 	context.system.advance_silk(owner, 10000.0)
 	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), context.system.silk_capacity(owner)), "silk regeneration clamps to capacity")
+
+func _test_runtime_tick_restores_depleted_silk_and_placement() -> void:
+	var owner: Variant = _creature(PLAYER_SPIDER, &"runtime_silk_owner")
+	owner.genome.set_value(&"web_strength", 0.8)
+	owner.needs.hunger = 80.0
+	var context := _web_context(owner, Vector2(24, 24))
+	for placement_index: int in 4:
+		assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "setup placement %d consumes available silk" % placement_index)
+	assert_true(is_zero_approx(context.system.silk_reserve(owner.creature_id)), "setup fully depletes the reserve")
+	assert_eq(context.system.place_web(owner, Vector2(40, 24), Vector2.UP), null, "depleted reserve rejects placement")
+
+	var main: Variant = MAIN_SCENE.instantiate()
+	var runtime_clock := GameTimeData.new()
+	main.game_time = runtime_clock
+	main.web_system = context.system
+	main.starting_creature = owner
+	main._process(30.0)
+	var regenerated: float = context.system.silk_reserve(owner.creature_id)
+	assert_true(regenerated > 0.0, "runtime gameplay tick regenerates a non-starving owner's depleted silk")
+	assert_true(regenerated <= context.system.silk_capacity(owner), "runtime regeneration never exceeds capacity")
+	assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "placement becomes possible after enough runtime regeneration")
+	main._process(10000.0)
+	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), context.system.silk_capacity(owner)), "runtime regeneration clamps at capacity")
+	main.free()
+	runtime_clock.free()
 
 func _test_owner_is_ignored_and_intruder_emits_stable_ids() -> void:
 	var owner: Variant = _creature(PLAYER_SPIDER, &"owner_creature")
@@ -228,6 +256,23 @@ func _test_manual_composition_uses_left_mouse_and_non_ai_cricket() -> void:
 	assert_eq(cricket_state.species_id, &"field_cricket", "web-test target uses field-cricket content")
 	assert_eq(cricket_state.creature_id, &"web_test_cricket_0001", "web-test target has a distinct stable creature ID")
 	assert_true(main.get_node_or_null("PreyBrain") == null, "Task 7 composition adds no prey AI")
+	main.free()
+
+func _test_debug_cricket_turns_away_from_blocked_terrain() -> void:
+	var zone := ZoneStateData.new()
+	zone.resize(5, 5, &"forest_floor")
+	zone.set_cell(Vector2i(3, 2), &"tree_block")
+	var cricket: Variant = _creature(FIELD_CRICKET, &"blocked_debug_cricket")
+	var cricket_actor: Variant = _actor(cricket, Vector2(40, 40))
+	cricket_actor.bind_zone(zone)
+	var main: Variant = MAIN_SCENE.instantiate()
+	main.zone = zone
+	main.web_test_cricket = cricket_actor
+	main._cricket_anchor = cricket_actor.position
+	main._cricket_drift = 1.0
+	main._physics_process(0.1)
+	var resulting_velocity: Vector2 = cricket_actor.velocity_for_direction(cricket_actor.desired_direction, 0.1)
+	assert_true(not resulting_velocity.is_zero_approx(), "Task-7 debug cricket selects a traversable direction when forward terrain is blocked")
 	main.free()
 
 func _web_context(owner: Variant, owner_position: Vector2) -> Dictionary:
