@@ -78,6 +78,19 @@ Canonical integration branch: `main`.
 - WASD and arrow-key movement bindings
 - Left Shift global slowdown through `GameTime`
 
+### Task 7 — Web placement, restraint, durability, and vibration sensing
+
+- web placement with range and semantic terrain validation
+- silk reserve, placement cost, and regeneration while energy is above `20`
+- hunger does not directly gate silk regeneration
+- owner-safe web triggering
+- transient restraint and movement slowdown for intruders
+- durability damage from active struggle
+- passive durability aging with roughly `300` simulated seconds of fresh lifetime
+- shared web break and restraint-cleanup path
+- high-importance vibration sensing memory for owners within sensory range
+- temporary deterministic field-cricket debug target for manual Task 7 verification; this is not Task 8 AI
+
 ## Current automated tests
 
 Central runner:
@@ -92,8 +105,9 @@ Registered suites:
 - `tests/test_creature_state.gd`
 - `tests/test_zone_generator.gd`
 - `tests/test_ui_models.gd`
+- `tests/test_web_system.gd`
 
-Current result: `PASS: 6 suite(s)`.
+Current expected result: `PASS: 7 suite(s)`.
 
 Run the full suite:
 
@@ -109,16 +123,9 @@ godot --headless --path . --quit-after 2
 
 There is currently no GitHub CI workflow. Test success must therefore be verified locally.
 
-## Next task
+## Next step
 
-### Task 7 — Web placement, web triggering, restraint, and vibration sensing
-
-Planned scope:
-
-- web placement
-- web triggering
-- restraint
-- vibration sensing
+Review and incorporate the user's AI design correction before implementing Task 8.
 
 ## Authoritative project documents
 
@@ -141,12 +148,12 @@ New work should normally happen on a task/feature branch and be merged into `mai
 
 ## Known status
 
-- Tasks 1–6 are implemented and merged into `main`.
-- The current test runner contains all six implemented suites.
-- The central automated suite passes all six suites.
-- Fresh-cache editor validation and smoke boot passed.
-- Manual acceptance passed for WASD and arrow-key movement, blocked terrain, spider climbable-wall and small-gap traversal, and Left Shift global slowdown with restoration to normal speed.
-- Task 7 is the next implementation task.
+- Tasks 1–7 are implemented and merged into `main`.
+- The current test runner contains seven suites, including `tests/test_web_system.gd`.
+- The current expected central automated result is `PASS: 7 suite(s)`.
+- Fresh-cache editor validation and smoke boot were run after the Task 7 merge.
+- Manual acceptance passed for Task 7 web placement, triggering, restraint, vibration sensing, and web breakage.
+- Review and incorporate the user's AI design correction before implementing Task 8.
 - Multiplayer remains an approved long-term direction and is not part of the v0.1 implementation.
 - No save/load system is planned for v0.1.
 - Prototype art is intentionally non-blocking for current system work.
