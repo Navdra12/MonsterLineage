@@ -123,9 +123,18 @@ godot --headless --path . --quit-after 2
 
 There is currently no GitHub CI workflow. Test success must therefore be verified locally.
 
+## Approved but not implemented
+
+The advanced creature AI architecture is approved and documented in:
+
+- `docs/superpowers/specs/2026-09-15-advanced-creature-ai-design.md`
+- `docs/superpowers/plans/2026-09-15-advanced-creature-ai-implementation-plan.md`
+
+No Task 8 implementation has started. There are no AI foundation, combat, prey, or predator brain implementations in the current baseline.
+
 ## Next step
 
-Review and incorporate the user's AI design correction before implementing Task 8.
+Task 8A — AI Foundation.
 
 ## Authoritative project documents
 
@@ -133,9 +142,17 @@ Implementation plan:
 
 `docs/superpowers/plans/2026-09-14-v0-1-vertical-slice.md`
 
+Advanced creature AI implementation plan:
+
+`docs/superpowers/plans/2026-09-15-advanced-creature-ai-implementation-plan.md`
+
 Design specification:
 
 `docs/superpowers/specs/2026-09-14-monster-lineage-sandbox-design.md`
+
+Approved advanced creature AI design:
+
+`docs/superpowers/specs/2026-09-15-advanced-creature-ai-design.md`
 
 Repository code and tests are the source of truth for what is actually implemented.
 
@@ -153,7 +170,8 @@ New work should normally happen on a task/feature branch and be merged into `mai
 - The current expected central automated result is `PASS: 7 suite(s)`.
 - Fresh-cache editor validation and smoke boot were run after the Task 7 merge.
 - Manual acceptance passed for Task 7 web placement, triggering, restraint, vibration sensing, and web breakage.
-- Review and incorporate the user's AI design correction before implementing Task 8.
+- The advanced creature AI design and implementation plan are approved and documented.
+- No Task 8 implementation has started; Task 8A — AI Foundation is next.
 - Multiplayer remains an approved long-term direction and is not part of the v0.1 implementation.
 - No save/load system is planned for v0.1.
 - Prototype art is intentionally non-blocking for current system work.

@@ -458,6 +458,88 @@ Future skirmish modes may use different PvP, team, spawn, and victory rules whil
 
 **Reason:** Private co-op and future competitive play need different policy without requiring separate networking cores.
 
+---
+
+## D028 — Creature AI uses one universal reasoning architecture
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** AI architecture
+
+All AI-controlled creatures use the same capability-driven architecture: subjective perception and beliefs feed Utility goal selection, bounded GOAP-style planning, and persistent learning and habits.
+
+Prey and predator behavior must be expressed through profiles, capabilities, goals, actions, and context within this universal brain. Separate `PreyBrain` and `PredatorBrain` architectures are not permitted.
+
+**Reason:** A universal architecture supports evolved creatures, individual variation, and control changes without multiplying species- or role-specific controller classes.
+
+---
+
+## D029 — AI reasons from subjective knowledge
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** AI architecture
+
+AI decisions must be based on the creature's observations, beliefs, confidence, and persistent knowledge. An AI brain must not query omniscient `WorldState` data to learn facts the creature has not perceived.
+
+Authoritative world data may resolve actions and outcomes, but it does not become free decision-making knowledge.
+
+**Reason:** Subjective knowledge allows believable mistakes, meaningful perception, and different behavior among creatures that occupy the same world.
+
+---
+
+## D030 — Persistent AI experience belongs to the creature
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** AI / creature state
+
+Persistent knowledge, strategy learning, and habits belong to the individual creature and survive controller changes.
+
+Current goal, plan, action, tactical target, working observations, interrupt flags, and other controller/execution state are transient and do not belong to persistent creature state.
+
+**Reason:** A creature must retain its learned behavioral history when control changes between a player and AI without persisting disposable runtime machinery.
+
+---
+
+## D031 — Cognition is an evolvable capability model
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** Biology / AI architecture
+
+Cognition is represented through evolvable capabilities and bounded parameters such as memory, planning depth, learning, and habit formation. Authored species or instinct profiles provide defaults, but species identity does not permanently hard-code cognition.
+
+**Reason:** Descendants and individuals must be able to vary cognitively without requiring new brain classes or a fixed species intelligence label.
+
+---
+
+## D032 — AI work is deterministic, staggered, bounded, and event-driven
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** AI / simulation architecture
+
+Ordinary AI thinking is distributed across deterministic stable scheduling slots. Planning has explicit search bounds, and urgent gameplay events may trigger immediate interrupts rather than waiting for the next ordinary update.
+
+Gameplay-affecting ordering and tie-breaking must be deterministic and must not depend on dictionary iteration order or uncontrolled randomness.
+
+**Reason:** The AI must remain reproducible, responsive to critical events, and scalable without every creature performing unbounded planning every frame.
+
+---
+
+## D033 — Advanced AI delivery is split into Tasks 8A and 8B
+
+**Date:** 2026-09-15
+**Status:** Accepted
+**Scope:** v0.1 implementation
+
+Task 8A delivers the universal AI foundation and headless reasoning tests. Task 8B integrates combat, live perception and action execution, web interactions, and the first living cricket and frog behaviors.
+
+The detailed execution authority is `docs/superpowers/plans/2026-09-15-advanced-creature-ai-implementation-plan.md`.
+
+**Reason:** Separating reasoning infrastructure from living-world integration creates a review gate before combat and scene wiring expand the implementation surface.
+
 # Adding future decisions
 
 Add a new entry when a task makes a durable decision that meaningfully constrains later work.

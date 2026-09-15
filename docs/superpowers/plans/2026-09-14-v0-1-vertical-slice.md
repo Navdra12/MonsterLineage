@@ -77,9 +77,11 @@ src/
       combat_service.gd       # bite, damage, injury, venom application
       venom_status.gd         # timed venom state
     ai/
-      utility_brain.gd        # small needs/personality-based action scorer
-      prey_brain.gd           # flee/forage prototype
-      predator_brain.gd       # stalk/chase/attack prototype
+      ai_brain.gd             # universal Utility + bounded GOAP orchestration
+      ai_scheduler.gd         # deterministic staggered/event-driven updates
+      perception/             # observations and subjective belief updates
+      planning/               # bounded goal/action planning from believed facts
+      navigation/             # subjective tactical routing and recovery
     social/
       relationship_state.gd   # trust/fear/respect for prototype interactions
       interaction_service.gd  # feed/bond/reproduction readiness
@@ -732,67 +734,27 @@ git commit -m "feat: add functional spider web traps"
 
 ---
 
-### Task 8: Bite, venom, prey/predator AI, feeding, and injury consequences
+### Task 8A — AI Foundation
 
-**Files:**
-- Create: `src/gameplay/combat/combat_service.gd`
-- Create: `src/gameplay/combat/venom_status.gd`
-- Create: `src/gameplay/ai/utility_brain.gd`
-- Create: `src/gameplay/ai/prey_brain.gd`
-- Create: `src/gameplay/ai/predator_brain.gd`
-- Create: `tests/test_combat_and_ai.gd`
-- Modify: `tests/run_all.gd`
-- Modify: `src/creatures/creature_actor.gd`
-- Modify: `src/game/main.gd`
+Build the universal creature reasoning foundation before adding live combat or ecology actors. This phase introduces subjective observations and beliefs, Utility goal selection, bounded GOAP-style planning, capability-driven actions, persistent individual knowledge/strategy learning/habits, evolvable cognition profiles, deterministic staggered scheduling, tactical navigation, and AI introspection.
 
-**Interfaces:**
-- Produces: `CombatService.bite(attacker: CreatureState, target: CreatureState) -> Dictionary`
-- Produces: `CombatService.apply_damage(target: CreatureState, body_part: StringName, amount: float, source_tags: Array[StringName]) -> void`
-- Produces: `VenomStatus.tick(target: CreatureState, delta: float) -> void`
-- Produces: `UtilityBrain.choose_action(context: Dictionary) -> StringName`
+No species-specific `PreyBrain` or `PredatorBrain` is created. Authored profiles and creature capabilities configure the universal `AIBrain`.
 
-- [ ] **Step 1: Write failing combat tests**
+Detailed files, interfaces, RED/GREEN steps, commits, and the Task 8A review gate are authoritative in:
 
-Test that higher `venom_potency` produces a stronger venom status, leg injury lowers movement modifier, lethal core damage marks `CreatureState.is_alive=false`, and a prey brain chooses `flee` when a predator is closer than food.
+`docs/superpowers/plans/2026-09-15-advanced-creature-ai-implementation-plan.md`
 
-- [ ] **Step 2: Run tests and verify failure**
+---
 
-Expected: FAIL.
+### Task 8B — Combat and Living AI Integration
 
-- [ ] **Step 3: Implement bite and lightweight body-part damage**
+After the Task 8A review gate, connect the universal foundation to bite, venom, injury consequences, feeding, live perception, movement/action execution, web events, and the prototype ecology actors.
 
-Bite range: `28 px`; cooldown: `0.65 s` base. Damage derives from body size and condition. Bite applies venom charges capped by attacker `venom_capacity`. The 0.1 target parts are `core`, `legs`, `mouth`; use weighted selection unless the tactical slowdown target selector later specifies one.
+The field cricket and frog predator must use the same `AIBrain` architecture. Their prey/predator differences come from subjective knowledge, cognition/instinct profiles, goals, available actions, and body capabilities—not separate brain classes.
 
-- [ ] **Step 4: Implement venom over time**
+Detailed files, interfaces, tests, integration order, manual acceptance, and commits are authoritative in:
 
-Venom reduces condition gradually and applies movement impairment before lethal damage. Stronger targets resist through chitin/body-size factors. Avoid instant kills from one ordinary bite against the frog predator.
-
-- [ ] **Step 5: Implement prey and predator prototype brains**
-
-`PreyBrain`: forage when safe; flee known predator or recent web vibration; struggle when webbed.
-
-`PredatorBrain`: wander; detect prey inside sensory radius; chase; bite; abandon chase when target enters inaccessible small gap or distance exceeds leash.
-
-Both use the same `CreatureState` and `CreatureActor`; no separate hardcoded “enemy class.”
-
-- [ ] **Step 6: Implement eating and learned food preference**
-
-Dead prey exposes a `consume` interaction. Nutrition reduces hunger, restores some energy, and calls `FoodMemory.record_food`. If hunger was `>= 90` before eating, add context tag `starvation_save` so the preference effect is stronger.
-
-- [ ] **Step 7: Spawn ecology actors**
-
-Spawn several crickets, one frog predator, and placeholders for the three social groups at generator-defined points. The frog must be dangerous enough that direct early combat is a poor choice; a webbed/venomed frog may still be beatable with preparation.
-
-- [ ] **Step 8: Run tests and manual early-loop check**
-
-Manual acceptance: hunt a cricket by web/bite, eat it, observe hunger reduction; get hit by the frog and see meaningful impairment; escape through a small gap the frog cannot use.
-
-- [ ] **Step 9: Commit**
-
-```bash
-git add src/gameplay/combat src/gameplay/ai src/creatures/creature_actor.gd src/game/main.gd tests/test_combat_and_ai.gd tests/run_all.gd
-git commit -m "feat: add hunting venom feeding and predator pressure"
-```
+`docs/superpowers/plans/2026-09-15-advanced-creature-ai-implementation-plan.md`
 
 ---
 
@@ -841,7 +803,7 @@ This task intentionally does not implement full final species-specific courtship
 
 - [ ] **Step 5: Implement one claimable burrow nest**
 
-Give the three social-group representatives a minimal autonomous `wander_near_anchor` behavior through `UtilityBrain` so they are living actors rather than stationary interaction terminals.
+Give the three social-group representatives a minimal autonomous `wander_near_anchor` behavior through the universal `AIBrain` so they are living actors rather than stationary interaction terminals.
 
 At the generated nest candidate, `interact` claims the burrow if unowned. Generate a semantic nest name with the current naming profile. Track founder, members, cached food count, and clutches. Claiming adds a significant memory event `claimed_nest`.
 
@@ -934,7 +896,7 @@ git commit -m "feat: add seeded clutch genetics and offspring variation"
 **Files:**
 - Create: `src/gameplay/lineage/lineage_graph.gd`
 - Create: `src/gameplay/lineage/generation_service.gd`
-- Create: `src/gameplay/ai/utility_brain.gd` if not already created; otherwise modify it
+- Reuse/modify: the universal `AIBrain` foundation delivered by Task 8A
 - Create: `src/game/game_state.gd`
 - Create: `tests/test_generation_transfer.gd`
 - Modify: `tests/run_all.gd`
@@ -972,7 +934,7 @@ Move run-level ownership out of `Main`. `Main` becomes composition/input/UI wiri
 Eligibility for 0.1 voluntary transfer: the target is alive, is a direct daughter of current creature, and may be any age stage including hatchling. On transfer:
 
 1. mark former actor autonomous;
-2. attach `UtilityBrain` using the former player's stored personality, food memory, memory, needs, and relationships;
+2. attach the universal `AIBrain` using the former player's persistent knowledge, strategy learning, habits, personality, food memory, significant memory, needs, and relationships;
 3. set target actor player-controlled;
 4. update `current_creature_id`;
 5. remember `control_transferred` on both creatures.
@@ -981,7 +943,7 @@ Do not expose any path to transfer back.
 
 - [ ] **Step 5: Make former-player NPC behavior reflect learned history**
 
-`UtilityBrain` scores actions from state. Required 0.1 influences:
+The universal `AIBrain` reuses the creature's persistent learned state. Required 0.1 influences:
 
 - high hunger raises food-seeking weight;
 - strong food preference raises target-food weight;
@@ -990,7 +952,7 @@ Do not expose any path to transfer back.
 - high caution lowers attack preference against stronger creatures;
 - remembered successful web-hunt positions raise revisit weight when hungry.
 
-This is intentionally a small utility model, not a general planner.
+Task 11 must not introduce a second former-player AI path. It extends the Task 8A Utility + bounded GOAP foundation only as required for lineage transfer behavior.
 
 - [ ] **Step 6: Implement death fallback**
 
@@ -1201,7 +1163,7 @@ The task order is mandatory because later interfaces depend on earlier pure-data
 Recommended execution grouping if using batch execution:
 
 1. Tasks 1–4: project/data foundations.
-2. Tasks 5–8: immediate spider survival gameplay.
+2. Tasks 5–8B: immediate spider survival gameplay, with the Task 8A review gate before Task 8B integration.
 3. Tasks 9–11: nest, reproduction, lineage transfer.
 4. Tasks 12–13: presentation and vertical-slice acceptance.
 
