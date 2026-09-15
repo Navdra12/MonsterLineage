@@ -6,6 +6,7 @@ const SUITE_SCRIPTS: Array[Script] = [
         preload("res://tests/test_genome.gd"),
         preload("res://tests/test_creature_state.gd"),
 	preload("res://tests/test_zone_generator.gd"),
+	preload("res://tests/test_ui_models.gd"),
 ]
 
 func _initialize() -> void:
@@ -28,6 +29,11 @@ func _run() -> void:
                 suite.RngService = rng_service
                 if _has_property(suite, &"LocaleService"):
                         suite.LocaleService = locale_service
+                if _has_property(suite, &"RegisteredSuitePaths"):
+                        var suite_paths: Array[String] = []
+                        for registered_script: Script in SUITE_SCRIPTS:
+                                suite_paths.append(registered_script.resource_path)
+                        suite.RegisteredSuitePaths = suite_paths
                 suite.run()
                 for failure in suite.failures:
                         failures.append("%s: %s" % [suite_script.resource_path, failure])
