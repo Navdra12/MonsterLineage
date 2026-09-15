@@ -30,10 +30,13 @@ func run() -> void:
 	_test_larger_targets_receive_less_restraint()
 	_test_placement_range_and_semantic_terrain()
 	_test_silk_cost_rejection_and_fed_regeneration()
-	_test_runtime_tick_restores_depleted_silk_and_placement()
+	_test_repeated_runtime_silk_regeneration_uses_energy()
 	_test_owner_is_ignored_and_intruder_emits_stable_ids()
 	_test_restraint_is_transient_and_breakage_clears_it()
 	_test_struggle_reduces_durability()
+	_test_passive_web_aging_uses_durability_lifetime()
+	_test_passive_aging_clears_restraint_through_break_cleanup()
+	_test_struggle_and_passive_aging_are_additive()
 	_test_vibration_memory_obeys_genome_sensory_range()
 	_test_creature_state_has_no_player_or_network_ownership()
 	_test_manual_composition_uses_left_mouse_and_non_ai_cricket()
@@ -126,10 +129,11 @@ func _test_silk_cost_rejection_and_fed_regeneration() -> void:
 	context.system.advance_silk(owner, 10000.0)
 	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), context.system.silk_capacity(owner)), "silk regeneration clamps to capacity")
 
-func _test_runtime_tick_restores_depleted_silk_and_placement() -> void:
+func _test_repeated_runtime_silk_regeneration_uses_energy() -> void:
 	var owner: Variant = _creature(PLAYER_SPIDER, &"runtime_silk_owner")
 	owner.genome.set_value(&"web_strength", 0.8)
-	owner.needs.hunger = 80.0
+	owner.needs.hunger = 100.0
+	owner.needs.energy = 100.0
 	var context := _web_context(owner, Vector2(24, 24))
 	for placement_index: int in 4:
 		assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "setup placement %d consumes available silk" % placement_index)
@@ -142,10 +146,22 @@ func _test_runtime_tick_restores_depleted_silk_and_placement() -> void:
 	main.web_system = context.system
 	main.starting_creature = owner
 	main._process(30.0)
-	var regenerated: float = context.system.silk_reserve(owner.creature_id)
-	assert_true(regenerated > 0.0, "runtime gameplay tick regenerates a non-starving owner's depleted silk")
-	assert_true(regenerated <= context.system.silk_capacity(owner), "runtime regeneration never exceeds capacity")
-	assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "placement becomes possible after enough runtime regeneration")
+	assert_true(context.system.silk_reserve(owner.creature_id) > 0.0, "energy above twenty regenerates depleted silk regardless of hunger")
+	assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "first regenerated charge can be spent")
+	main._process(30.0)
+	assert_true(context.system.silk_reserve(owner.creature_id) > 0.0, "silk regenerates again after spending the first recovered charge")
+	assert_true(context.system.place_web(owner, Vector2(40, 24), Vector2.UP) != null, "second regenerated charge can be spent")
+
+	owner.needs.energy = 20.0
+	var at_threshold: float = context.system.silk_reserve(owner.creature_id)
+	main._process(30.0)
+	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), at_threshold), "energy equal to twenty pauses silk regeneration")
+	owner.needs.energy = 19.0
+	main._process(30.0)
+	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), at_threshold), "energy below twenty pauses silk regeneration")
+	owner.needs.energy = 21.0
+	main._process(10.0)
+	assert_true(context.system.silk_reserve(owner.creature_id) > at_threshold, "raising energy above twenty resumes silk regeneration")
 	main._process(10000.0)
 	assert_true(is_equal_approx(context.system.silk_reserve(owner.creature_id), context.system.silk_capacity(owner)), "runtime regeneration clamps at capacity")
 	main.free()
@@ -206,6 +222,48 @@ func _test_struggle_reduces_durability() -> void:
 	var before: float = segment.durability
 	segment.advance_struggle(intruder_actor, 0.5)
 	assert_true(segment.durability < before, "moving while restrained damages web durability")
+
+func _test_passive_web_aging_uses_durability_lifetime() -> void:
+	var owner: Variant = _creature(PLAYER_SPIDER, &"aging_owner")
+	owner.genome.set_value(&"web_strength", 1.3)
+	var context := _web_context(owner, Vector2(24, 24))
+	var segment: Variant = context.system.place_web(owner, Vector2(40, 24), Vector2.UP)
+	var initial_durability: float = segment.durability
+	segment._physics_process(100.0)
+	var after_one_hundred: float = segment.durability
+	assert_true(after_one_hundred < initial_durability, "passive aging monotonically decreases durability")
+	segment._physics_process(199.0)
+	assert_true(segment.armed and segment.durability > 0.0, "fresh untouched web survives shortly before three hundred simulated seconds")
+	segment._physics_process(2.0)
+	assert_true(not segment.armed and is_zero_approx(segment.durability), "untouched web breaks at roughly three hundred simulated seconds")
+	var late_intruder: Variant = _actor(_creature(FIELD_CRICKET, &"late_intruder"), Vector2(40, 24))
+	assert_true(not segment.try_trigger(late_intruder), "already broken web cannot trigger again")
+
+func _test_passive_aging_clears_restraint_through_break_cleanup() -> void:
+	var owner: Variant = _creature(PLAYER_SPIDER, &"aging_cleanup_owner")
+	var intruder: Variant = _creature(FIELD_CRICKET, &"aging_cleanup_intruder")
+	var context := _web_context(owner, Vector2(24, 24))
+	var intruder_actor: Variant = _actor(intruder, Vector2(40, 24))
+	var segment: Variant = context.system.place_web(owner, Vector2(40, 24), Vector2.UP)
+	var baseline: float = intruder_actor.movement_speed()
+	segment.try_trigger(intruder_actor)
+	assert_true(intruder_actor.movement_speed() < baseline, "aging cleanup setup applies restraint")
+	segment._physics_process(301.0)
+	assert_true(not segment.armed, "passive aging reaches the shared broken state")
+	assert_true(is_equal_approx(intruder_actor.movement_speed(), baseline), "passive aging break clears current restraint")
+
+func _test_struggle_and_passive_aging_are_additive() -> void:
+	var owner: Variant = _creature(PLAYER_SPIDER, &"additive_aging_owner")
+	var intruder: Variant = _creature(FIELD_CRICKET, &"additive_aging_intruder")
+	var context := _web_context(owner, Vector2(24, 24))
+	var intruder_actor: Variant = _actor(intruder, Vector2(40, 24))
+	var segment: Variant = context.system.place_web(owner, Vector2(40, 24), Vector2.UP)
+	segment.try_trigger(intruder_actor)
+	segment._physics_process(290.0)
+	assert_true(segment.armed, "passive aging alone leaves a small lifetime shortly before expiry")
+	intruder_actor.set_move_direction(Vector2.RIGHT)
+	segment._physics_process(0.5)
+	assert_true(not segment.armed, "struggle damage plus prior passive aging breaks the web before three hundred seconds")
 
 func _test_vibration_memory_obeys_genome_sensory_range() -> void:
 	var near_owner: Variant = _creature(PLAYER_SPIDER, &"near_owner")

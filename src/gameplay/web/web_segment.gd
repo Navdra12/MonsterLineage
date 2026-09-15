@@ -7,11 +7,13 @@ signal triggered(intruder: Node)
 signal broken
 
 const CreatureActorData = preload("res://src/creatures/creature_actor.gd")
+const PASSIVE_LIFETIME_SECONDS := 300.0
 
 var owner_id: StringName
 var strength: float = 1.0
 var adhesion: float = 1.0
 var durability: float = 10.0
+var max_durability: float = 10.0
 var armed := true
 
 var _restrained_actors: Dictionary = {}
@@ -26,7 +28,8 @@ func configure(web_owner_id: StringName, web_strength: float, web_adhesion: floa
 	owner_id = web_owner_id
 	strength = maxf(web_strength, 0.0)
 	adhesion = maxf(web_adhesion, 0.0)
-	durability = strength * 10.0
+	max_durability = strength * 10.0
+	durability = max_durability
 	armed = durability > 0.0
 
 func restraint_multiplier(target_body_size: float) -> float:
@@ -73,6 +76,10 @@ func break_web() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not armed:
+		return
+	durability -= maxf(delta, 0.0) * max_durability / PASSIVE_LIFETIME_SECONDS
+	if durability <= 0.0:
+		break_web()
 		return
 	for actor_key: int in _restrained_actors.keys():
 		var actor: Variant = _restrained_actors[actor_key]
