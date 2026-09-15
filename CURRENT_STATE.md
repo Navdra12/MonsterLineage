@@ -61,6 +61,23 @@ Canonical integration branch: `main`.
 - `WorldView` rendering from `ZoneState`
 - fixed development world seed `424242`
 
+### Task 6 — Player creature controller, traversal, hunger, and active slowdown
+
+- `CreatureActor` scene/controller adapter around controller-neutral `CreatureState`
+- normalized real-time movement
+- body-plan-driven semantic traversal
+- `wall_crawl` and `small_gap` capability checks
+- movement speed affected by genome `move_speed`, age stage, and injury
+- hunger and energy progression
+- additional movement energy cost
+- starvation condition loss
+- food consumption and starvation-save food memory
+- one-shot death signaling
+- hatchling player-spider creation from species data with a cloned genome
+- camera presentation
+- WASD and arrow-key movement bindings
+- Left Shift global slowdown through `GameTime`
+
 ## Current automated tests
 
 Central runner:
@@ -74,6 +91,9 @@ Registered suites:
 - `tests/test_genome.gd`
 - `tests/test_creature_state.gd`
 - `tests/test_zone_generator.gd`
+- `tests/test_ui_models.gd`
+
+Current result: `PASS: 6 suite(s)`.
 
 Run the full suite:
 
@@ -91,14 +111,14 @@ There is currently no GitHub CI workflow. Test success must therefore be verifie
 
 ## Next task
 
-### Task 6 — Player creature controller, traversal, hunger, and active slowdown
+### Task 7 — Web placement, web triggering, restraint, and vibration sensing
 
 Planned scope:
 
-- player creature controller
-- traversal
-- hunger
-- active slowdown
+- web placement
+- web triggering
+- restraint
+- vibration sensing
 
 ## Authoritative project documents
 
@@ -121,10 +141,12 @@ New work should normally happen on a task/feature branch and be merged into `mai
 
 ## Known status
 
-- Tasks 1–5 are implemented and merged into `main`.
-- The current test runner contains all five implemented suites.
-- Fresh-cache verification passed with no parse, script, resource-load, or runtime errors.
-- Task 6 is the next implementation task.
+- Tasks 1–6 are implemented and merged into `main`.
+- The current test runner contains all six implemented suites.
+- The central automated suite passes all six suites.
+- Fresh-cache editor validation and smoke boot passed.
+- Manual acceptance passed for WASD and arrow-key movement, blocked terrain, spider climbable-wall and small-gap traversal, and Left Shift global slowdown with restoration to normal speed.
+- Task 7 is the next implementation task.
 - Multiplayer remains an approved long-term direction and is not part of the v0.1 implementation.
 - No save/load system is planned for v0.1.
 - Prototype art is intentionally non-blocking for current system work.
