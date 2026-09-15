@@ -48,6 +48,19 @@ Canonical integration branch: `main`.
 - significant-event memory with importance-based pruning
 - multiplayer-safe `CreatureState` simulation data
 
+### Task 5 — Deterministic forest-and-burrow zone generation
+
+- deterministic semantic forest and burrow zone generation
+- deterministic FastNoiseLite forest layout
+- cellular-automata burrow generation
+- semantic climbable walls and small gaps
+- stable semantic spawn points
+- nest candidates
+- deterministic connectivity validation and corridor repair
+- `ZoneState` / `ZoneGenerator` separation from presentation
+- `WorldView` rendering from `ZoneState`
+- fixed development world seed `424242`
+
 ## Current automated tests
 
 Central runner:
@@ -60,6 +73,7 @@ Registered suites:
 - `tests/test_localization_and_naming.gd`
 - `tests/test_genome.gd`
 - `tests/test_creature_state.gd`
+- `tests/test_zone_generator.gd`
 
 Run the full suite:
 
@@ -77,14 +91,14 @@ There is currently no GitHub CI workflow. Test success must therefore be verifie
 
 ## Next task
 
-### Task 5 — Deterministic forest-and-burrow zone generation
+### Task 6 — Player creature controller, traversal, hunger, and active slowdown
 
 Planned scope:
 
-- deterministic semantic zone generation
-- forest and underground burrow terrain
-- stable spawn points and nest candidates
-- headless zone-generation tests
+- player creature controller
+- traversal
+- hunger
+- active slowdown
 
 ## Authoritative project documents
 
@@ -107,10 +121,11 @@ New work should normally happen on a task/feature branch and be merged into `mai
 
 ## Known status
 
-- Tasks 1–4 are implemented and merged into `main`.
-- The current test runner contains all four implemented suites.
-- Task 5 is the next implementation task.
-- Multiplayer remains a supported long-term direction and is not part of the v0.1 implementation.
+- Tasks 1–5 are implemented and merged into `main`.
+- The current test runner contains all five implemented suites.
+- Fresh-cache verification passed with no parse, script, resource-load, or runtime errors.
+- Task 6 is the next implementation task.
+- Multiplayer remains an approved long-term direction and is not part of the v0.1 implementation.
 - No save/load system is planned for v0.1.
 - Prototype art is intentionally non-blocking for current system work.
 
